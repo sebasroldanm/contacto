@@ -1,0 +1,141 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class cronCanales extends MY_Controller {
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->model("AdministradorModel");
+        $this->load->library('smpp1');
+        $this->load->library('smpp2');
+    }
+
+    public function index() {  
+        $contador = 0;
+        $suma = 0;
+        $estadoA = $this->canalA('test','');
+        $estadoE = $this->canalE('test','');
+        $estadoB = $this->canalB('test','');
+
+        if($estadoA == 'CAIDA')
+           $this->canalE('envio','POSIBLE CAIDA DEL CANAL A - FAVOR REVISAR');
+        if($estadoB == 'CAIDA')
+           $this->canalE('envio','POSIBLE CAIDA DEL CANAL B - FAVOR REVISAR');
+        if($estadoE == 'CAIDA')
+           $this->canalA('envio','POSIBLE CAIDA DEL CANAL E - FAVOR REVISAR');
+    }
+
+    function canalA($accion,$mensaje)
+    {
+        /**
+         * inicializa los parametros de la conexion SMPP
+         * y abre la conexion con el servidor SMPP
+         */
+         $estado = '';
+        $where = "id = 1";
+        $data["smpp"] = $this->AdministradorModel->buscar('canales', 'host,port,usr,password,systemtype,nomenclatura', $where);
+
+        //print_r($data["smpp"]);
+
+        $smpphost = $data["smpp"][0]["host"];
+        $smppport = $data["smpp"][0]["port"];
+        $systemid = $data["smpp"][0]["usr"];
+        $password = $data["smpp"][0]["password"];
+        $system_type = $data["smpp"][0]["systemtype"];
+        $from = "contactos";
+
+        $smpp = new SMPPClass();
+        $smpp->SetSender($from);
+
+       $conectado = $smpp->Start($smpphost, $smppport, $systemid, $password, $system_type);
+
+        print_r($conectado);
+
+        if($conectado == 1)
+        {
+           $estado = 'CONECTADO';
+           if($accion  == 'envio')
+           {
+                echo "paso por aqui";
+                $smpp->Send("3112578441",$mensaje);
+           } 
+        }
+        else   
+           $estado = 'CAIDA';
+        
+        return $estado;
+    }
+
+    function canalB($accion,$mensaje)
+    {
+        /**
+         * inicializa los parametros de la conexion SMPP
+         * y abre la conexion con el servidor SMPP
+         */
+        $where = "id = 5";
+        $data["smpp"] = $this->AdministradorModel->buscar('canales', 'host,port,usr,password,systemtype,nomenclatura,sourceaddress,rango1,rango2,ultimo', $where);
+
+        //print_r($data["smpp"]);
+
+        $smpphost = $data["smpp"][0]["host"];
+        $smppport = $data["smpp"][0]["port"];
+        $systemid = $data["smpp"][0]["usr"];
+        $password = $data["smpp"][0]["password"];
+        $system_type = $data["smpp"][0]["systemtype"];
+        $smpp = new SMPP($smpphost,$smppport);
+        $conectado = $smpp->bindTransceiver($systemid,$password);
+
+         echo "<hr>" ;
+          print_r($conectado);
+        
+        if($conectado)
+           $estado = 'CONECTADO';
+        else   
+           $estado = 'CAIDA';
+        
+        return $estado;
+    }
+
+    function canalE($accion,$mensaje)
+    {
+        /**
+         * inicializa los parametros de la conexion SMPP
+         * y abre la conexion con el servidor SMPP
+         */
+        $where = "id = 8";
+        $data["smpp"] = $this->AdministradorModel->buscar('canales', 'host,port,usr,password,systemtype,nomenclatura,sourceaddress,rango1,rango2,ultimo', $where);
+
+        //print_r($data["smpp"]);
+
+        $smpphost = $data["smpp"][0]["host"];
+        $smppport = $data["smpp"][0]["port"];
+        $systemid = $data["smpp"][0]["usr"];
+        $password = $data["smpp"][0]["password"];
+        $system_type = $data["smpp"][0]["systemtype"];
+        $from = 87462;
+        
+        $smpp = new SMPP($smpphost,$smppport);
+        $conectado = $smpp->bindTransceiver($systemid,$password);
+
+         echo "<hr>" ;
+          print_r($conectado);
+        
+        if($conectado)
+        {
+           $estado = 'CONECTADO';
+           if($accion  == 'envio')
+           {
+                echo "paso por aqui";
+                $smpp->sendSMS($from,"3112578441",$mensaje);
+           } 
+        }
+        else   
+           $estado = 'CAIDA';
+
+        $smpp->close();
+        
+        return $estado;
+    }
+}

@@ -1,0 +1,12 @@
+[aplicación]
+inicio='href="inicio"'
+
+[envio de mensaje]
+enviar por excel="href='#' onclick=cargaPagina('"cargaexcel"')"
+
+[información]
+información del cliente='href="#"'
+información del trafico mensual='href="#"'
+información del trafico diario='href="#"'
+información del trafico hoy='href="#"'
+descarga archivo de mensajes='href="#"'

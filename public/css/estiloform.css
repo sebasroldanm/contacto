@@ -1,0 +1,54 @@
+.centrardiv{
+    margin:0 auto;
+}
+.titulologin{
+    background-color: #596BB3;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid #000;
+    border-radius: 6px 6px 0 0;
+}
+.espacio{
+    height: 25px;
+}
+.espacio10{
+    height: 10px;
+}
+.espacioinput{
+    height: 10px;
+}
+.filas{
+    background-color:#f5f5f5;
+    height: 28px;
+    border:1px solid #000;
+}
+.campos{
+    height: auto;
+    border:1px solid #000;
+}
+.fondomenu{
+    background-color:#f5f5f5;
+    height: 30px;
+    border:1px solid #ccccff;
+}
+.ok{color:green;font-weight: bold}
+.error{
+    color:red;
+    font-weight: bold;
+    border:1px solid red;
+}
+.otra{
+    border:1px solid red;
+}
+
+.col-center{
+    float: none;margin: 0 auto;
+}
+.col-left{
+    float: left;margin: 0 auto;
+}
+.col-right{
+    float: right;margin: 0 auto;
+}

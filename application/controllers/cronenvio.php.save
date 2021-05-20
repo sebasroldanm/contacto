@@ -1,0 +1,50 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class cronenvio extends MY_Controller {
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->model("AdministradorModel");
+        $this->load->library('smpp');
+    }
+
+    public function index() {
+       $smpphost = '190.147.95.18';
+        $smppport = '5060';
+        $systemid = 'SMPP_CONTAC';
+        $password = 'VfbXR6h5';
+        $from = 'jorge';
+        
+        /*
+        ton = 2;
+        npi=1;
+        
+        retirar solicitud 
+         * registred delivery fail
+         * 
+         */
+        
+        
+        $smpp = new SMPP($smpphost,$smppport);
+        $conectado = $smpp->bindTransceiver($systemid,$password);
+        var_dump($conectado);
+
+//        $conectado = $smpp->sendSMS($from, "3112578441","PRUEBA PARA OSCAR");
+        $conectado = $smpp->sendSMS($from, "3203776811","PRUEBA PARA jorge");
+        var_dump($conectado);
+    } 
+
+    /*function hextostr($hex)
+    {
+        $str='';
+        for ($i=0; $i < strlen($hex)-1; $i+=2)
+        {
+        $str .= chr(hexdec($hex[$i].$hex[$i+1]));
+        }
+        return $str;
+    }*/
+    
+}
